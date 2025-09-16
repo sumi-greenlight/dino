@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦕 Dinosaur Animation - Iframe Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #00ff00;
+            margin-bottom: 30px;
+        }
+        
+        .iframe-container {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #000;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            border-radius: 3px;
+        }
+        
+        button:hover {
+            background: #00ff00;
+            color: #000;
+        }
+        
+        .info {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .code {
+            background: #1a1a1a;
+            padding: 15px;
+            border-left: 3px solid #00ff00;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+        
+        .download-section {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .download-btn {
+            background: #00ff00;
+            color: #000;
+            padding: 15px 25px;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .download-btn:hover {
+            background: #00cc00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🦕 ASCII Walking Dinosaur - Iframe Integration Demo</h1>
+        
+        <div class="iframe-container">
+            <iframe id="dinoFrame" src="walking_dino.html"></iframe>
+        </div>
+        
+        <div class="controls">
+            <h3>External Controls (for parent page):</h3>
+            <button onclick="sendMessage('toggle')">⏯️ Toggle Animation</button>
+            <button onclick="sendMessage('changeSpeed')">⚡ Change Speed</button>
+            <button onclick="sendMessage('reset')">🔄 Reset Position</button>
+        </div>
+        
+        <div class="download-section">
+            <h3>📥 Download Files</h3>
+            <a href="walking_dino.html" download="walking_dino.html" class="download-btn">
+                📄 Download HTML File
+            </a>
+            <a href="walking_dino.py" download="walking_dino.py" class="download-btn">
+                🐍 Download Python Script
+            </a>
+        </div>
+        
+        <div class="info">
+            <h3>🔧 How to Use in Your Website:</h3>
+            
+            <h4>Option 1: Direct Iframe Embed</h4>
+            <div class="code">
+&lt;iframe src="walking_dino.html" width="800" height="400" style="border: none;"&gt;&lt;/iframe&gt;
+            </div>
+            
+            <h4>Option 2: Responsive Iframe</h4>
+            <div class="code">
+&lt;div style="width: 100%; height: 400px; border: 2px solid #00ff00;"&gt;
+    &lt;iframe src="walking_dino.html" width="100%" height="100%" style="border: none;"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+            </div>
+            
+            <h4>Option 3: With External Controls</h4>
+            <div class="code">
+&lt;iframe id="dinoFrame" src="walking_dino.html" width="800" height="400"&gt;&lt;/iframe&gt;
+&lt;button onclick="document.getElementById('dinoFrame').contentWindow.postMessage({action: 'toggle'}, '*')"&gt;
+    Toggle Animation
+&lt;/button&gt;
+
+&lt;script&gt;
+function controlDino(action) {
+    document.getElementById('dinoFrame').contentWindow.postMessage({action: action}, '*');
+}
+&lt;/script&gt;
+            </div>
+            
+            <h4>Features:</h4>
+            <ul>
+                <li>✅ Self-contained HTML file - no external dependencies</li>
+                <li>✅ Responsive design that works on mobile and desktop</li>
+                <li>✅ iframe-safe with postMessage communication</li>
+                <li>✅ Customizable speed and controls</li>
+                <li>✅ Retro terminal aesthetic with green-on-black theme</li>
+                <li>✅ Works offline once downloaded</li>
+            </ul>
+            
+            <h4>Python Version:</h4>
+            <p>The Python script runs in your terminal with the same animation. Just run:</p>
+            <div class="code">python3 walking_dino.py</div>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage(action) {
+            const iframe = document.getElementById('dinoFrame');
+            iframe.contentWindow.postMessage({action: action}, '*');
+        }
+        
+        // Handle any messages from the iframe (optional)
+        window.addEventListener('message', (event) => {
+            console.log('Message from iframe:', event.data);
+        });
+    </script>
+</body>
+</html>

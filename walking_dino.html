@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦕 Walking Dinosaur Animation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #000;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1;
+            overflow: hidden;
+        }
+        
+        #container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            white-space: pre;
+        }
+        
+        #dino {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            white-space: pre;
+            font-size: 10px;
+            line-height: 1;
+            color: #00ff00;
+            text-shadow: 0 0 2px #00ff00;
+        }
+        
+        #controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            color: #00ff00;
+            font-size: 14px;
+        }
+        
+        button {
+            background: #000;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 5px 10px;
+            margin: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+        }
+        
+        button:hover {
+            background: #00ff00;
+            color: #000;
+        }
+        
+        .title {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: #00ff00;
+            text-align: center;
+        }
+        
+        /* Responsive design for iframe */
+        @media (max-width: 600px) {
+            #dino {
+                font-size: 8px;
+            }
+            .title {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="title">🦕 ASCII Block-Style Walking Dinosaur 🦕</div>
+    
+    <div id="container">
+        <div id="dino"></div>
+    </div>
+    
+    <div id="controls">
+        <button onclick="toggleAnimation()">⏯️ Play/Pause</button>
+        <button onclick="changeSpeed()">⚡ Speed: <span id="speedLabel">Normal</span></button>
+        <button onclick="resetPosition()">🔄 Reset</button>
+        <div style="margin-top: 10px;">
+            Position: <span id="position">0</span> | Frame: <span id="frame">1</span>
+        </div>
+    </div>
+
+    <script>
+        class WalkingDino {
+            constructor() {
+                this.position = 0;
+                this.frame = 0;
+                this.isRunning = true;
+                this.speed = 300; // milliseconds
+                this.speedLevel = 1; // 1=normal, 2=fast, 3=very fast
+                this.containerWidth = window.innerWidth;
+                this.dinoElement = document.getElementById('dino');
+                
+                // Two frames for walking animation - block style ASCII art
+                this.frames = [
+                    // Frame 1 - left foot forward
+                    `                ████████████    
+              ██            ██  
+            ██                ██
+          ██      ████      ██  
+        ██      ██    ██    ██  
+      ██        ██    ██    ██  
+    ██            ████      ██  
+  ██                        ██  
+██                          ██  
+██    ████████████████████████  
+██  ██                      ██  
+██████                      ██  
+██  ██                      ██  
+██  ██                      ██  
+██  ██                    ██    
+██  ██████████████████████      
+██                              
+██                              
+██      ██                      
+██      ██                      
+██    ████          ██          
+██    ████          ██          
+      ████          ████        
+      ████          ████        `,
+                    
+                    // Frame 2 - right foot forward
+                    `                ████████████    
+              ██            ██  
+            ██                ██
+          ██      ████      ██  
+        ██      ██    ██    ██  
+      ██        ██    ██    ██  
+    ██            ████      ██  
+  ██                        ██  
+██                          ██  
+██    ████████████████████████  
+██  ██                      ██  
+██████                      ██  
+██  ██                      ██  
+██  ██                      ██  
+██  ██                    ██    
+██  ██████████████████████      
+██                              
+██                              
+██                ██            
+██                ██            
+██          ██    ████          
+██          ██    ████          
+            ████  ████          
+            ████  ████          `
+                ];
+                
+                this.updateContainerWidth();
+                window.addEventListener('resize', () => this.updateContainerWidth());
+                this.startAnimation();
+            }
+            
+            updateContainerWidth() {
+                this.containerWidth = window.innerWidth;
+            }
+            
+            getCurrentFrame() {
+                return this.frames[this.frame];
+            }
+            
+            nextFrame() {
+                this.frame = (this.frame + 1) % this.frames.length;
+            }
+            
+            moveForward() {
+                this.position += 3;
+                // Reset position when dino walks off screen
+                if (this.position > this.containerWidth) {
+                    this.position = -400; // Start from left side (dino width ~320px)
+                }
+            }
+            
+            render() {
+                const currentFrame = this.getCurrentFrame();
+                this.dinoElement.textContent = currentFrame;
+                this.dinoElement.style.left = this.position + 'px';
+                
+                // Update UI
+                document.getElementById('position').textContent = this.position;
+                document.getElementById('frame').textContent = this.frame + 1;
+            }
+            
+            animate() {
+                if (this.isRunning) {
+                    this.render();
+                    this.nextFrame();
+                    this.moveForward();
+                }
+                
+                setTimeout(() => this.animate(), this.speed);
+            }
+            
+            startAnimation() {
+                this.animate();
+            }
+            
+            toggle() {
+                this.isRunning = !this.isRunning;
+            }
+            
+            changeSpeed() {
+                this.speedLevel = (this.speedLevel % 3) + 1;
+                switch(this.speedLevel) {
+                    case 1:
+                        this.speed = 300;
+                        document.getElementById('speedLabel').textContent = 'Normal';
+                        break;
+                    case 2:
+                        this.speed = 150;
+                        document.getElementById('speedLabel').textContent = 'Fast';
+                        break;
+                    case 3:
+                        this.speed = 75;
+                        document.getElementById('speedLabel').textContent = 'Very Fast';
+                        break;
+                }
+            }
+            
+            reset() {
+                this.position = 0;
+                this.frame = 0;
+            }
+        }
+        
+        // Global instance
+        let dino;
+        
+        // Control functions
+        function toggleAnimation() {
+            if (dino) {
+                dino.toggle();
+            }
+        }
+        
+        function changeSpeed() {
+            if (dino) {
+                dino.changeSpeed();
+            }
+        }
+        
+        function resetPosition() {
+            if (dino) {
+                dino.reset();
+            }
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', () => {
+            dino = new WalkingDino();
+        });
+        
+        // Handle iframe communication (for parent window control)
+        window.addEventListener('message', (event) => {
+            if (event.data.action === 'toggle') {
+                toggleAnimation();
+            } else if (event.data.action === 'changeSpeed') {
+                changeSpeed();
+            } else if (event.data.action === 'reset') {
+                resetPosition();
+            }
+        });
+    </script>
+</body>
+</html>
